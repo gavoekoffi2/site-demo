@@ -33,6 +33,21 @@ Ouvrez `index.html` ou `clair.html` dans Chrome, Safari ou Edge. Tout fonctionne
 9. **Prix** : en EUR ou en FCFA.
 10. **Fidélité, Actualités, Univers FIMO228, Contact.**
 
+## La musique — « La Visite »
+
+Un thème musical original de 96 secondes, composé pour la Maison dans un style afro-house élégant, entre l'Afrique et l'international :
+
+- une kalimba, des congas, un shaker ;
+- une basse « log drum » façon amapiano ;
+- des accords chauds en ré dorien ;
+- une pulsation à 120 BPM.
+
+La musique est entièrement synthétisée (aucun échantillon externe, aucun droit tiers) : `assets/audio/la-visite.mp3`.
+
+- **Activation** : un bouton **Son** dans l'en-tête, et une invitation qui apparaît quand on entre dans la visite immersive. Les navigateurs interdisent le son sans clic du visiteur.
+- **Volume** : la musique reste discrète sur le reste du site et monte quand on entre dans la Maison (film, galerie 3D, salon).
+- **Les films** : la même bande-son est intégrée aux films. Quand on ouvre le film en plein écran, la musique d'ambiance s'efface.
+
 ## À propos des vidéos
 
 Les vidéos dans `assets/video/` sont des montages cinématographiques réalisés uniquement à partir des photos officielles de la Maison. Pour mettre de vraies vidéos tournées dans la boutique ou l'atelier, il suffit de remplacer les fichiers en gardant les mêmes noms :

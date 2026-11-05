@@ -87,10 +87,10 @@
     var heroVid = $('.hero__video');
     targets.push(new Promise(function (res) {
       if (!heroVid) return res();
-      if (heroVid.readyState >= 3) return res();
-      heroVid.addEventListener('canplaythrough', res, { once: true });
+      if (heroVid.readyState >= 2) return res();
+      heroVid.addEventListener('loadeddata', res, { once: true });
       heroVid.addEventListener('error', res, { once: true });
-      setTimeout(res, 5000);
+      setTimeout(res, 3000);
     }));
     if (document.fonts && document.fonts.ready) targets.push(document.fonts.ready);
     ['assets/img/site/jacques-logoh.webp', 'assets/img/p/lignes-sacrees-1.webp'].forEach(function (src) {
@@ -643,6 +643,59 @@
       else if (l) { c.classList.remove('is-hover'); c.classList.add('is-link'); }
       else { c.classList.remove('is-hover', 'is-link'); }
     });
+  })();
+
+  /* =========================================================
+     EXPÉRIENCE SONORE — « La Visite », thème original de la Maison
+     ========================================================= */
+  (function () {
+    var audio = $('#ambient'); if (!audio) return;
+    var btn = $('#soundBtn'), invite = $('#soundInvite');
+    var on = false, vol = 0, target = 0, inVisit = false, ducked = false, invited = store.get('jlc-invite', false);
+    var BASE = .22, VISIT = .85;
+    function computeTarget() { target = !on || ducked || document.hidden ? 0 : (inVisit ? VISIT : BASE); }
+    (function fade() {
+      vol += (target - vol) * .035;
+      if (Math.abs(target - vol) < .002) vol = target;
+      audio.volume = Math.max(0, Math.min(1, vol));
+      if (vol === 0 && target === 0 && !audio.paused) audio.pause();
+      requestAnimationFrame(fade);
+    })();
+    function setSound(state) {
+      on = state; store.set('jlc-sound', on);
+      document.body.classList.toggle('is-sound', on);
+      btn.setAttribute('aria-pressed', String(on));
+      btn.setAttribute('aria-label', on ? 'Couper la musique' : 'Activer la musique');
+      if (on) { audio.preload = 'auto'; var pr = audio.play(); if (pr && pr.catch) pr.catch(function () { setSound(false); }); hideInvite(); }
+      computeTarget();
+    }
+    function hideInvite() { invite.classList.remove('is-on'); invite.setAttribute('aria-hidden', 'true'); }
+    btn.addEventListener('click', function () { setSound(!on); });
+    $$('[data-sound-on]').forEach(function (b) { b.addEventListener('click', function () { setSound(true); }); });
+    $('#soundNo').addEventListener('click', function () { invited = true; store.set('jlc-invite', true); hideInvite(); });
+
+    /* la musique s'élève quand on entre dans la Maison */
+    new IntersectionObserver(function (en) {
+      inVisit = en[0].isIntersecting; computeTarget();
+      if (inVisit && !on && !invited) { invite.classList.add('is-on'); invite.setAttribute('aria-hidden', 'false'); }
+      if (!inVisit) hideInvite();
+    }, { rootMargin: '-20% 0px -20% 0px' }).observe($('#visite'));
+
+    /* le film plein écran a sa propre bande-son : la musique d'ambiance s'efface */
+    var fm = $('#filmModal');
+    new MutationObserver(function () { ducked = fm.classList.contains('is-open'); computeTarget(); if (!ducked && on && audio.paused) audio.play().catch(function () {}); })
+      .observe(fm, { attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('visibilitychange', function () { computeTarget(); if (!document.hidden && on && audio.paused) audio.play().catch(function () {}); });
+
+    /* préférence mémorisée : reprise au premier geste du visiteur */
+    if (store.get('jlc-sound', false)) {
+      var resume = function (ev) {
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function (e) { window.removeEventListener(e, resume); });
+        if (ev && ev.target && ev.target.closest && ev.target.closest('#soundBtn, [data-sound-on]')) return; // le bouton gère lui-même
+        setSound(true);
+      };
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (e) { window.addEventListener(e, resume, { once: true }); });
+    }
   })();
 
   /* =========================================================

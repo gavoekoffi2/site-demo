@@ -55,6 +55,7 @@
     <div class="currency" role="group" aria-label="Devise">
       <button data-cur="EUR" class="is-active">EUR</button><button data-cur="FCFA">FCFA</button>
     </div>
+    <button class="sound" id="soundBtn" aria-pressed="false" aria-label="Activer la musique"><span class="sound__bars"><i></i><i></i><i></i><i></i></span><span class="sound__label">Son</span></button>
     <button class="header__cart" id="cartBtn" aria-label="Ouvrir le panier">Panier <span class="cart-count" id="cartCount">0</span></button>
   </div>
 </header>
@@ -227,6 +228,7 @@
     <p class="eyebrow">03 — La visite immersive</p>
     <h2 class="display reveal-lines">Entrez<br>dans la <em>Maison</em></h2>
     <p class="visit__lead reveal">Un voyage en images, de l’héritage des artisans togolais jusqu’aux trottoirs de Paris. Regardez le film, puis avancez à travers les salles de la Maison.</p>
+    <button class="visit__sound reveal" data-sound-on><span class="sound__bars"><i></i><i></i><i></i><i></i></span><span>Vivre la visite en musique</span><small>« La Visite » — thème original de la Maison</small></button>
   </div>
 
   <!-- Le film -->
@@ -423,6 +425,15 @@
     </div>
   </div>
 </aside>
+
+<!-- ============ MUSIQUE ============ -->
+<audio id="ambient" src="assets/audio/la-visite.mp3" loop preload="none"></audio>
+<div class="sound-invite" id="soundInvite" role="dialog" aria-label="Expérience sonore" aria-hidden="true">
+  <span class="sound__bars"><i></i><i></i><i></i><i></i></span>
+  <p>Pour vivre pleinement la visite, <em>laissez-vous porter par la musique.</em></p>
+  <button class="btn btn--solid" data-sound-on>Activer le son</button>
+  <button class="sound-invite__no" id="soundNo">Plus tard</button>
+</div>
 
 <!-- ============ SÉLECTEUR DE MODÈLE ============ -->
 <nav class="model-switch" aria-label="Choisir le modèle du site"><span>Modèle</span><a href="index.html" data-model="nuit" class="is-on" aria-current="page">Nuit</a><a href="clair.html" data-model="clair">Lumière</a></nav>
