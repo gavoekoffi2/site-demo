@@ -58,8 +58,9 @@
   </a>
   <div class="header__tools">
     <div class="currency" role="group" aria-label="Devise">
-      <button data-cur="EUR" class="is-active">EUR</button><button data-cur="FCFA">FCFA</button>
+      <button data-cur="EUR" class="is-active">EUR</button><button data-cur="FCFA">FCFA</button><button data-cur="USD">USD</button>
     </div>
+    <div class="lang" role="group" aria-label="Choisir la langue"><button type="button" data-lang-set="fr" class="is-on" aria-pressed="true">FR</button><button type="button" data-lang-set="en" aria-pressed="false">EN</button></div>
     <button class="sound" id="soundBtn" aria-pressed="false" aria-label="Activer la musique"><span class="sound__bars"><i></i><i></i><i></i><i></i></span><span class="sound__label">Son</span></button>
     <button class="header__cart" id="cartBtn" aria-label="Ouvrir le panier">Panier <span class="cart-count" id="cartCount">0</span></button>
   </div>
@@ -81,6 +82,8 @@
     <div class="menu__preview"><img alt="" id="menuPreview" src="assets/img/site/jacques-logoh.webp"></div>
     <div class="menu__foot">
       <p>Boulevard du 13 Janvier<br>+33 7 82 53 31 70 · 90 43 50 50</p>
+      <p class="menu__cur currency" role="group" aria-label="Devise"><button data-cur="EUR" class="is-active">EUR</button><button data-cur="FCFA">FCFA</button><button data-cur="USD">USD</button></p>
+      <p class="menu__lang lang" role="group" aria-label="Choisir la langue"><button type="button" data-lang-set="fr" class="is-on" aria-pressed="true">Français</button><button type="button" data-lang-set="en" aria-pressed="false">English</button></p>
       <p class="menu__socials"><a href="https://www.instagram.com/jacqueslogoh.couture/" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/JacquesLogoh.couture" target="_blank" rel="noopener">Facebook</a><a href="https://www.youtube.com/@jacqueslogoh1397" target="_blank" rel="noopener">YouTube</a><a href="https://x.com/LogohJacques" target="_blank" rel="noopener">X</a></p>
     </div>
   </div>
@@ -455,6 +458,7 @@
 <script src="assets/vendor/lenis.min.js"></script>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/logo.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -31,8 +31,9 @@ En ligne : https://gavoekoffi2.github.io/site-demo/
    - *Le Salon* : un reel vertical au format téléphone.
 7. **Collections** : 32 pièces filtrables (Femme, Homme), aperçu rapide, choix de la taille et de la couleur, panier.
 8. **Commande** : le panier envoie la commande pré-remplie sur le WhatsApp de la Maison (+33 7 82 53 31 70).
-9. **Prix** : en EUR ou en FCFA.
-10. **Fidélité, Actualités, Univers FIMO228, Contact.**
+9. **Prix** : en EUR, FCFA ou USD, comme sur l'ancien site. Le dollar suit leur règle exacte : prix en FCFA ÷ 564.
+10. **Langues** : français par défaut, anglais avec le bouton **FR / EN** (dans l'en-tête et dans le menu). Le lien direct vers la version anglaise est `?lang=en`.
+11. **Fidélité, Actualités, Univers FIMO228, Contact.**
 
 ## La musique — « La Visite »
 
@@ -67,6 +68,7 @@ index.html            le site (mode clair par défaut, bouton Clair / Sombre)
 clair.html            ancienne adresse, redirige vers index.html
 assets/css/           styles (le mode clair est dans style.css, section « MODÈLE B »)
 assets/js/data.js     catalogue repris du site actuel
+assets/js/i18n.js     traduction anglaise (textes, fiches produits, actualités)
 assets/js/main.js     interactions : défilement fluide, galerie 3D, panier, devises
 assets/img/           photos optimisées (WebP) et logo vectorisé
 assets/video/         films de la visite immersive

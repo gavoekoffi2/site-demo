@@ -22,12 +22,23 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* noop */ } }
   };
 
-  /* ---------- devise ---------- */
+  /* ---------- langue ---------- */
+  var EN = window.JLC_LANG === 'en';
+  var T = window.JLC_T || function (s) { return s; };
+  var LOC = EN ? 'en-US' : 'fr-FR';
+  function catT(c) { return T(c); }
+  function colorT(c) { return T(c); }
+
+  /* ---------- devise : EUR · FCFA · USD (USD = FCFA / 564, comme sur l'ancien site) ---------- */
   var currency = store.get('jlc-cur', 'EUR');
+  if (['EUR', 'FCFA', 'USD'].indexOf(currency) < 0) currency = 'EUR';
   function money(p, cur) {
     cur = cur || currency;
-    if (cur === 'FCFA') return p.fcfa.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' FCFA';
-    return p.eur.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    var sp = function (s) { return s.replace(/\u202f|\u00a0/g, ' '); };
+    if (cur === 'FCFA') return sp(p.fcfa.toLocaleString(LOC)) + ' FCFA';
+    if (cur === 'USD') { var u = Math.round(p.fcfa / 564 * 100) / 100; return '$' + sp(u.toLocaleString(LOC, { minimumFractionDigits: 2, maximumFractionDigits: 2 })); }
+    var e = sp(p.eur.toLocaleString(LOC, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    return EN ? '€' + e : e + ' €';
   }
   function moneyRaw(eur, fcfa) { return money({ eur: eur, fcfa: fcfa }); }
 
@@ -173,7 +184,7 @@
     document.body.classList.toggle('menu-open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-hidden', String(!open));
-    $('.header__label').textContent = open ? 'Fermer' : 'Menu';
+    $('.header__label').textContent = T(open ? 'Fermer' : 'Menu');
     if (lenis) open ? lenis.stop() : lenis.start();
   }
   menuBtn.addEventListener('click', function () { toggleMenu(); });
@@ -294,9 +305,9 @@
     looks.forEach(function (l, i) {
       var p = byId[l[0]]; if (!p) return;
       var img = p.imgs[l[1]] || p.imgs[0];
-      var el = document.createElement('figure'); el.className = 'look'; el.dataset.open = p.id; el.dataset.cursor = 'Voir';
+      var el = document.createElement('figure'); el.className = 'look'; el.dataset.open = p.id; el.dataset.cursor = T('Voir');
       el.innerHTML = '<span class="look__n">Look ' + String(i + 1).padStart(2, '0') + '</span><div class="look__img"><img src="' + img.src + '" alt="' + p.name + '" loading="lazy"></div>' +
-        '<figcaption class="look__cap"><b>' + p.name + '</b><span>' + p.cat + '</span></figcaption>';
+        '<figcaption class="look__cap"><b>' + p.name + '</b><span>' + catT(p.cat) + '</span></figcaption>';
       track.appendChild(el);
     });
   })();
@@ -344,18 +355,18 @@
   (function build3D() {
     var world = $('#g3dWorld'); if (!world) return;
     var rooms = [
-      { num: 'Salle I', name: 'L’Héritage', items: [
-        { src: 'assets/img/site/tissus-lignes-sacrees.webp', t: 'Fait main au Togo', s: 'Tissus' },
-        { src: 'assets/img/site/detail-batik.webp', t: 'Le batik signature', s: 'Détail' },
-        { video: 'visite-maison', t: 'La Visite', s: 'Film' },
-        { src: 'assets/img/site/bijou-logo.webp', t: 'Le monogramme', s: 'Pièce signature' } ] },
-      { num: 'Salle II', name: 'Lignes Sacrées', items: [
+      { num: T('Salle I'), name: T('L’Héritage'), items: [
+        { src: 'assets/img/site/tissus-lignes-sacrees.webp', t: T('Fait main au Togo'), s: T('Tissus') },
+        { src: 'assets/img/site/detail-batik.webp', t: T('Le batik signature'), s: T('Détail') },
+        { video: 'visite-maison', t: T('La Visite'), s: T('Film') },
+        { src: 'assets/img/site/bijou-logo.webp', t: T('Le monogramme'), s: T('Pièce signature') } ] },
+      { num: T('Salle II'), name: T('Lignes Sacrées'), items: [
         { id: 'lignes-sacrees', i: 0 }, { id: 'robe-bintou', i: 0 }, { id: 'roger', i: 0 }, { id: 'robe-solaia-2', i: 3 }, { id: 'lignes-sacrees', i: 2 } ] },
-      { num: 'Salle III', name: 'Homme', items: [
+      { num: T('Salle III'), name: T('Homme'), items: [
         { id: 'jamy', i: 0 }, { id: 'israel', i: 0 }, { id: 'veste-haute-couture', i: 0 }, { id: 'formose', i: 2 }, { id: 'waris-paspoil', i: 0 } ] },
-      { num: 'Salle IV', name: 'Femme', items: [
+      { num: T('Salle IV'), name: T('Femme'), items: [
         { id: 'robe-solaia-2', i: 0 }, { id: 'robe-dos-o', i: 0 }, { id: 'denim-jl', i: 0 }, { id: 'ensemble-2-pieces', i: 0 }, { id: 'sable', i: 0 } ] },
-      { num: 'Salle V', name: 'Paris', items: [
+      { num: T('Salle V'), name: T('Paris'), items: [
         { id: 'red-corine', i: 0 }, { id: 'adelita', i: 0 }, { id: 'red-corine', i: 1 }, { id: 'adelita', i: 2 } ] }
     ];
     var Z = 0, STEP = 760, side = 1, nodes = [], titles = [], roomZ = [];
@@ -373,9 +384,9 @@
         var el = document.createElement('div'); el.className = 'g3d__item';
         var media = it.video ? '<video data-media="' + it.video + '" data-src="' + mediaSrc(it.video, 'mp4') + '" poster="' + mediaSrc(it.video, 'jpg') + '" muted loop playsinline preload="none"></video>' : '<img data-src="' + src + '" alt="' + (p ? p.name : it.t) + '">';
         el.innerHTML = '<figure class="g3d__card">' + media + '<figcaption><b>' + (p ? p.name : it.t) + '</b><span>' + (p ? money(p) : it.s) + '</span></figcaption></figure>';
-        if (p) { el.dataset.open = p.id; el.dataset.cursor = 'Découvrir'; }
-        else if (it.video) { el.dataset.cursor = 'Lecture'; el.addEventListener('click', openFilm); }
-        else { el.dataset.cursor = 'Voir'; }
+        if (p) { el.dataset.open = p.id; el.dataset.cursor = T('Découvrir'); }
+        else if (it.video) { el.dataset.cursor = T('Lecture'); el.addEventListener('click', openFilm); }
+        else { el.dataset.cursor = T('Voir'); }
         world.appendChild(el);
         nodes.push({ el: el, z: Z, side: side, y: (k % 2 ? 30 : -20), room: ri, p: p });
         side *= -1; Z -= STEP;
@@ -458,14 +469,14 @@
       var feature = (i % 9 === 0);
       var el = document.createElement('article');
       el.className = 'card' + (feature ? ' is-feature' : '');
-      el.dataset.cat = p.cat; el.dataset.open = p.id; el.dataset.cursor = 'Voir';
+      el.dataset.cat = p.cat; el.dataset.open = p.id; el.dataset.cursor = T('Voir');
       var a = p.imgs[0], b = p.imgs[1];
       el.innerHTML = '<div class="card__img"><img src="' + a.src + '" alt="' + p.name + '" loading="lazy" width="' + a.w + '" height="' + a.h + '">' +
         (b ? '<img src="' + b.src + '" alt="" loading="lazy" aria-hidden="true">' : '') +
-        (p.id === 'lignes-sacrees' ? '<span class="card__tag">Collection signature</span>' : (p.id === 'jamy' ? '<span class="card__tag">Notre plus grand succès</span>' : '')) +
-        '<span class="card__quick">Aperçu rapide</span></div>' +
+        (p.id === 'lignes-sacrees' ? '<span class="card__tag">' + T('Collection signature') + '</span>' : (p.id === 'jamy' ? '<span class="card__tag">' + T('Notre plus grand succès') + '</span>' : '')) +
+        '<span class="card__quick">' + T('Aperçu rapide') + '</span></div>' +
         '<div class="card__meta"><h3 class="card__name">' + p.name + '</h3><span class="card__price" data-price="' + p.id + '">' + money(p) + '</span></div>' +
-        '<div class="card__cat">' + p.cat + ' · ' + p.colors.length + ' coloris</div>';
+        '<div class="card__cat">' + catT(p.cat) + ' · ' + p.colors.length + ' ' + T('coloris') + '</div>';
       grid.appendChild(el);
     });
   }
@@ -495,6 +506,7 @@
     renderCart();
   }
   $$('.currency button').forEach(function (b) { b.addEventListener('click', function () { setCurrency(b.dataset.cur); }); });
+  $$('.currency button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.cur === currency); });
 
   /* =========================================================
      MODALES
@@ -523,7 +535,7 @@
   function chips(container, list, key) {
     container.innerHTML = '';
     list.forEach(function (v, i) {
-      var b = document.createElement('button'); b.type = 'button'; b.textContent = v;
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = key === 'color' ? colorT(v) : v;
       if (i === 0) { b.classList.add('is-on'); qvSel[key] = v; }
       b.addEventListener('click', function () { $$('button', container).forEach(function (x) { x.classList.toggle('is-on', x === b); }); qvSel[key] = v; updateWa(); });
       container.appendChild(b);
@@ -531,20 +543,22 @@
   }
   function updateWa() {
     var p = qvCurrent; if (!p) return;
-    var msg = 'Bonjour Jacques Logoh Couture, je souhaite commander : ' + p.name + ' — Taille ' + qvSel.size + ', couleur ' + qvSel.color + ' (' + money(p) + ').';
+    var msg = EN
+      ? 'Hello Jacques Logoh Couture, I would like to order: ' + p.name + ' — Size ' + qvSel.size + ', colour ' + colorT(qvSel.color) + ' (' + money(p) + ').'
+      : 'Bonjour Jacques Logoh Couture, je souhaite commander : ' + p.name + ' — Taille ' + qvSel.size + ', couleur ' + qvSel.color + ' (' + money(p) + ').';
     $('#qvWa').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
   }
   function openQuick(id) {
     var p = byId[id]; if (!p) return;
     qvCurrent = p;
-    $('#qvCat').textContent = p.cat; $('#qvName').textContent = p.name; $('#qvPrice').textContent = money(p);
-    $('#qvDesc').textContent = p.desc || '';
+    $('#qvCat').textContent = catT(p.cat); $('#qvName').textContent = p.name; $('#qvPrice').textContent = money(p);
+    $('#qvDesc').textContent = (window.JLC_DESC ? window.JLC_DESC(p) : p.desc) || '';
     var main = $('#qvMain'), th = $('#qvThumbs');
     main.innerHTML = '<img src="' + p.imgs[0].src + '" alt="' + p.name + '">';
     th.innerHTML = '';
     p.imgs.forEach(function (im, i) {
       var b = document.createElement('button'); b.type = 'button'; b.className = i === 0 ? 'is-on' : '';
-      b.setAttribute('aria-label', 'Vue ' + (i + 1));
+      b.setAttribute('aria-label', T('Vue') + ' ' + (i + 1));
       b.innerHTML = '<img src="' + im.src + '" alt="">';
       b.addEventListener('click', function () {
         $$('button', th).forEach(function (x) { x.classList.toggle('is-on', x === b); });
@@ -568,7 +582,7 @@
     if (!qvCurrent) return;
     cart.push({ id: qvCurrent.id, size: qvSel.size, color: qvSel.color });
     store.set('jlc-cart', cart); renderCart();
-    toast('Ajouté au panier — ' + qvCurrent.name);
+    toast(T('Ajouté au panier') + ' — ' + qvCurrent.name);
     closeModal(qv); setTimeout(function () { toggleCart(true); }, 400);
   });
 
@@ -591,6 +605,7 @@
   $$('[data-post]').forEach(function (el) {
     el.addEventListener('click', function () {
       var p = POSTS[el.dataset.post];
+      if (window.JLC_POSTS_EN) { var e = window.JLC_POSTS_EN[el.dataset.post]; p = { img: p.img, date: e.date, title: e.title, text: e.text }; }
       $('#artImg').src = p.img; $('#artImg').alt = p.title; $('#artDate').textContent = p.date; $('#artTitle').textContent = p.title;
       $('#artText').innerHTML = p.text.map(function (t) { return '<p>' + t + '</p>'; }).join('');
       openModal($('#article'));
@@ -611,19 +626,19 @@
   $$('[data-close-cart]').forEach(function (b) { b.addEventListener('click', function () { toggleCart(false); }); });
   function renderCart() {
     var box = $('#cartItems'); $('#cartCount').textContent = cart.length;
-    if (!cart.length) { box.innerHTML = '<p class="cart__empty">Votre panier est vide.</p>'; $('#cartTotal').textContent = money({ eur: 0, fcfa: 0 }); $('#cartWa').removeAttribute('href'); return; }
+    if (!cart.length) { box.innerHTML = '<p class="cart__empty">' + T('Votre panier est vide.') + '</p>'; $('#cartTotal').textContent = money({ eur: 0, fcfa: 0 }); $('#cartWa').removeAttribute('href'); return; }
     var eur = 0, fcfa = 0, lines = [];
     box.innerHTML = '';
     cart.forEach(function (c, i) {
       var p = byId[c.id]; eur += p.eur; fcfa += p.fcfa;
-      lines.push('• ' + p.name + ' — Taille ' + c.size + ', ' + c.color + ' (' + money(p) + ')');
+      lines.push('• ' + p.name + ' — ' + T('Taille') + ' ' + c.size + ', ' + colorT(c.color) + ' (' + money(p) + ')');
       var row = document.createElement('div'); row.className = 'ci';
-      row.innerHTML = '<img src="' + p.imgs[0].src + '" alt=""><div><b>' + p.name + '</b><small>Taille ' + c.size + ' · ' + c.color + '</small></div><div class="ci__r">' + money(p) + '<button data-rm="' + i + '">Retirer</button></div>';
+      row.innerHTML = '<img src="' + p.imgs[0].src + '" alt=""><div><b>' + p.name + '</b><small>' + T('Taille') + ' ' + c.size + ' · ' + colorT(c.color) + '</small></div><div class="ci__r">' + money(p) + '<button data-rm="' + i + '">' + T('Retirer') + '</button></div>';
       box.appendChild(row);
     });
     var total = moneyRaw(Math.round(eur * 100) / 100, fcfa);
     $('#cartTotal').textContent = total;
-    var msg = 'Bonjour Jacques Logoh Couture, je souhaite commander :\n' + lines.join('\n') + '\nTotal : ' + total;
+    var msg = (EN ? 'Hello Jacques Logoh Couture, I would like to order:\n' : 'Bonjour Jacques Logoh Couture, je souhaite commander :\n') + lines.join('\n') + (EN ? '\nTotal: ' : '\nTotal : ') + total;
     $('#cartWa').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
     $$('[data-rm]', box).forEach(function (b) { b.addEventListener('click', function () { cart.splice(+b.dataset.rm, 1); store.set('jlc-cart', cart); renderCart(); }); });
   }
@@ -740,7 +755,7 @@
       on = state;
       document.body.classList.toggle('is-sound', on);
       btn.setAttribute('aria-pressed', String(on));
-      btn.setAttribute('aria-label', on ? 'Couper la musique' : 'Activer la musique');
+      btn.setAttribute('aria-label', T(on ? 'Couper la musique' : 'Activer la musique'));
       if (on) {
         audio.preload = 'auto';
         var pr = audio.play();

@@ -594,3 +594,26 @@ html[data-theme="clair"] .loader__go:hover,html[data-theme="clair"] .loader__go:
 .sound-invite__on,.sound-invite__off{display:grid;gap:14px}
 .sound-invite.is-playing .sound-invite__off{display:none}
 .sound-invite:not(.is-playing) .sound-invite__on{display:none}
+
+
+/* langue FR / EN */
+.lang{display:flex;gap:2px}
+.header .lang{border:1px solid rgba(255,255,255,.3);border-radius:40px;padding:3px}
+.lang button{padding:5px 9px;border-radius:30px;font-size:10px;letter-spacing:.16em;transition:background .3s,color .3s}
+.header .lang button.is-on{background:#fff;color:#000}
+.menu__lang{margin:0;gap:8px}
+.menu__lang button{border:1px solid var(--line);padding:8px 14px;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.menu__lang button.is-on{background:var(--txt);color:var(--noir);border-color:var(--txt)}
+html[data-theme="clair"] .menu__lang button.is-on{color:#fbf9f6}
+@media (max-width:860px){.header .lang{display:none}}
+
+/* en-tête : respiration sur écrans moyens */
+.header__cart{white-space:nowrap}
+@media (max-width:1400px){.header__word em{display:none}}
+@media (max-width:1200px){.sound__label{display:none}.header__tools{gap:16px}}
+.menu .menu__cur{display:none;margin:0;gap:6px;border:0;padding:0}
+.menu__cur button{border:1px solid var(--line);padding:8px 14px;border-radius:30px;font-size:10px;letter-spacing:.2em}
+.menu__cur button.is-active{background:var(--txt);color:var(--noir);border-color:var(--txt)}
+html[data-theme="clair"] .menu__cur button.is-active{color:#fbf9f6}
+@media (max-width:860px){.menu .menu__cur{display:flex}}
+@media (max-width:1100px){.header__tools>.currency{display:none}.menu .menu__cur{display:flex}}
