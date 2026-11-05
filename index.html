@@ -27,6 +27,11 @@
       <g clip-path="url(#loaderClip)"><use href="#jl-mark" class="loader__fill"/></g>
     </svg>
   </div>
+  <div class="loader__enter" id="loaderEnter" aria-hidden="true">
+    <button type="button" class="loader__go" id="enterSound"><span class="sound__bars"><i></i><i></i><i></i><i></i></span>Entrer dans la Maison</button>
+    <p class="loader__note">Expérience sonore · le son peut être coupé à tout moment</p>
+    <button type="button" class="loader__mute" id="enterMute">Entrer sans le son</button>
+  </div>
   <div class="loader__meta">
     <span>Jacques Logoh Couture</span>
     <span class="loader__count"><b id="loaderCount">0</b>%</span>
@@ -430,9 +435,16 @@
 <audio id="ambient" src="assets/audio/la-visite.mp3" loop preload="none"></audio>
 <div class="sound-invite" id="soundInvite" role="dialog" aria-label="Expérience sonore" aria-hidden="true">
   <span class="sound__bars"><i></i><i></i><i></i><i></i></span>
-  <p>Pour vivre pleinement la visite, <em>laissez-vous porter par la musique.</em></p>
-  <button class="btn btn--solid" data-sound-on>Activer le son</button>
-  <button class="sound-invite__no" id="soundNo">Plus tard</button>
+  <div class="sound-invite__on">
+    <p>La musique de la Maison vous accompagne dans la visite. <em>Vous pouvez la couper à tout moment.</em></p>
+    <button class="btn btn--solid" id="soundKeep">Continuer en musique</button>
+    <button class="sound-invite__no" id="soundCut">Couper le son</button>
+  </div>
+  <div class="sound-invite__off">
+    <p>Pour vivre pleinement la visite, <em>laissez-vous porter par la musique.</em></p>
+    <button class="btn btn--solid" data-sound-on>Activer le son</button>
+    <button class="sound-invite__no" id="soundNo">Plus tard</button>
+  </div>
 </div>
 
 <!-- ============ SÉLECTEUR DE MODE (clair par défaut / sombre) ============ -->

@@ -13,6 +13,7 @@
   function isClair() { return document.documentElement.getAttribute('data-theme') !== 'nuit'; }
   function mediaSrc(base, ext) { return 'assets/video/' + base + (isClair() ? '-clair' : '') + '.' + ext; }
   var PRODUCTS = window.JLC_PRODUCTS || [];
+  var soundApi = { set: function () {}, wanted: true };
   var byId = {}; PRODUCTS.forEach(function (p) { byId[p.id] = p; });
 
   /* ---------- stockage (tolérant) ---------- */
@@ -107,8 +108,32 @@
       var pct = Math.round(progress.v * 100);
       if (loaderCount) loaderCount.textContent = pct;
       if (loaderRect) loaderRect.setAttribute('y', String(929 - 929 * progress.v));
-      if (progress.v < 1) requestAnimationFrame(tick); else setTimeout(done, 250);
+      if (progress.v < 1) requestAnimationFrame(tick); else setTimeout(showEnter, 250);
     })();
+  }
+
+  /* écran d'entrée : le clic « Entrer » lance la musique (les navigateurs exigent un geste du visiteur) */
+  function showEnter() {
+    var box = $('#loaderEnter'); if (!box) return intro();
+    var entered = false;
+    function enter(withSound) {
+      if (entered) return; entered = true;
+      soundApi.wanted = withSound;
+      if (withSound) soundApi.set(true, true); else soundApi.set(false, true);
+      document.removeEventListener('keydown', onKey);
+      intro();
+    }
+    function onKey(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(true); } }
+    if (hasGsap) {
+      gsap.to('.loader__meta', { opacity: 0, duration: .5 });
+      gsap.to('.loader__mark', { y: -40, duration: 1.2, ease: 'expo.out' });
+      gsap.fromTo(box, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', delay: .2 });
+    }
+    box.classList.add('is-on'); box.setAttribute('aria-hidden', 'false');
+    setTimeout(function () { var b = $('#enterSound'); if (b) b.focus({ preventScroll: true }); }, 300);
+    $('#enterSound').addEventListener('click', function () { enter(true); });
+    $('#enterMute').addEventListener('click', function () { enter(false); });
+    document.addEventListener('keydown', onKey);
   }
 
   function intro() {
@@ -118,7 +143,7 @@
     if (!hasGsap) { if (loader) loader.remove(); return; }
     var tl = gsap.timeline({ defaults: { ease: 'expo.inOut' } });
     tl.to('.loader__mark', { scale: .7, opacity: 0, duration: .9 })
-      .to('.loader__meta', { opacity: 0, duration: .5 }, 0)
+      .to('.loader__meta, .loader__enter', { opacity: 0, duration: .5 }, 0)
       .to(loader, { clipPath: 'inset(0 0 100% 0)', duration: 1.2 }, .35)
       .set(loader, { display: 'none' })
       .to('.hero__arch', { clipPath: 'inset(0% 0 0 0)', duration: 1.6 }, .7)
@@ -687,37 +712,60 @@
 
   /* =========================================================
      EXPÉRIENCE SONORE — « La Visite », thème original de la Maison
+     Son activé par défaut : discret à l'accueil, il s'élève dans la visite.
      ========================================================= */
   (function () {
     var audio = $('#ambient'); if (!audio) return;
     var btn = $('#soundBtn'), invite = $('#soundInvite');
-    var on = false, vol = 0, target = 0, inVisit = false, ducked = false, invited = store.get('jlc-invite', false);
-    var BASE = .22, VISIT = .85;
+    var on = false, vol = 0, target = 0, inVisit = false, ducked = false, shown = false, hideT = null;
+    var BASE = .1, VISIT = .85;          // accueil très doux · visite immersive
     function computeTarget() { target = !on || ducked || document.hidden ? 0 : (inVisit ? VISIT : BASE); }
     (function fade() {
-      vol += (target - vol) * .035;
+      var k = target > vol ? .012 : .04;  // montée lente et enveloppante, descente plus rapide
+      vol += (target - vol) * k;
       if (Math.abs(target - vol) < .002) vol = target;
       audio.volume = Math.max(0, Math.min(1, vol));
       if (vol === 0 && target === 0 && !audio.paused) audio.pause();
       requestAnimationFrame(fade);
     })();
-    function setSound(state) {
-      on = state; store.set('jlc-sound', on);
+    function retryOnGesture() {
+      var go = function (ev) {
+        ['pointerdown', 'keydown', 'touchend'].forEach(function (e) { window.removeEventListener(e, go, true); });
+        if (ev && ev.target && ev.target.closest && ev.target.closest('#soundBtn, [data-sound-on], #soundCut, #enterMute')) return;
+        if (soundApi.wanted && !on) setSound(true);
+      };
+      ['pointerdown', 'keydown', 'touchend'].forEach(function (e) { window.addEventListener(e, go, true); });
+    }
+    function setSound(state, quiet) {
+      on = state;
       document.body.classList.toggle('is-sound', on);
       btn.setAttribute('aria-pressed', String(on));
       btn.setAttribute('aria-label', on ? 'Couper la musique' : 'Activer la musique');
-      if (on) { audio.preload = 'auto'; var pr = audio.play(); if (pr && pr.catch) pr.catch(function () { setSound(false); }); hideInvite(); }
+      if (on) {
+        audio.preload = 'auto';
+        var pr = audio.play();
+        if (pr && pr.catch) pr.catch(function () { on = false; document.body.classList.remove('is-sound'); computeTarget(); retryOnGesture(); });
+      }
+      if (!quiet) hideInvite();
       computeTarget();
     }
-    function hideInvite() { invite.classList.remove('is-on'); invite.setAttribute('aria-hidden', 'true'); }
-    btn.addEventListener('click', function () { setSound(!on); });
-    $$('[data-sound-on]').forEach(function (b) { b.addEventListener('click', function () { setSound(true); }); });
-    $('#soundNo').addEventListener('click', function () { invited = true; store.set('jlc-invite', true); hideInvite(); });
+    soundApi.set = setSound;
+    function showInvite() {
+      invite.classList.toggle('is-playing', on);
+      invite.classList.add('is-on'); invite.setAttribute('aria-hidden', 'false');
+      clearTimeout(hideT); hideT = setTimeout(hideInvite, on ? 9000 : 14000);
+    }
+    function hideInvite() { clearTimeout(hideT); invite.classList.remove('is-on'); invite.setAttribute('aria-hidden', 'true'); }
+    btn.addEventListener('click', function () { soundApi.wanted = !on; setSound(!on); });
+    $$('[data-sound-on]').forEach(function (b) { b.addEventListener('click', function () { soundApi.wanted = true; setSound(true); }); });
+    $('#soundKeep').addEventListener('click', hideInvite);
+    $('#soundCut').addEventListener('click', function () { soundApi.wanted = false; setSound(false); });
+    $('#soundNo').addEventListener('click', hideInvite);
 
-    /* la musique s'élève quand on entre dans la Maison */
+    /* entrée dans la Maison : la musique s'élève et un message propose de la couper */
     new IntersectionObserver(function (en) {
       inVisit = en[0].isIntersecting; computeTarget();
-      if (inVisit && !on && !invited) { invite.classList.add('is-on'); invite.setAttribute('aria-hidden', 'false'); }
+      if (inVisit && !shown) { shown = true; showInvite(); }
       if (!inVisit) hideInvite();
     }, { rootMargin: '-20% 0px -20% 0px' }).observe($('#visite'));
 
@@ -727,15 +775,8 @@
       .observe(fm, { attributes: true, attributeFilter: ['class'] });
     document.addEventListener('visibilitychange', function () { computeTarget(); if (!document.hidden && on && audio.paused) audio.play().catch(function () {}); });
 
-    /* préférence mémorisée : reprise au premier geste du visiteur */
-    if (store.get('jlc-sound', false)) {
-      var resume = function (ev) {
-        ['pointerdown', 'keydown', 'touchstart'].forEach(function (e) { window.removeEventListener(e, resume); });
-        if (ev && ev.target && ev.target.closest && ev.target.closest('#soundBtn, [data-sound-on]')) return; // le bouton gère lui-même
-        setSound(true);
-      };
-      ['pointerdown', 'keydown', 'touchstart'].forEach(function (e) { window.addEventListener(e, resume, { once: true }); });
-    }
+    /* sans écran d'entrée (mouvement réduit) : le son démarre au premier geste */
+    if (reduce || !hasGsap) retryOnGesture();
   })();
 
   /* =========================================================

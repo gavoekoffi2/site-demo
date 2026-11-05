@@ -45,8 +45,10 @@ Un thème musical original de 96 secondes, composé pour la Maison dans un style
 
 La musique est entièrement synthétisée (aucun échantillon externe, aucun droit tiers) : `assets/audio/la-visite.mp3`.
 
-- **Activation** : un bouton **Son** dans l'en-tête, et une invitation qui apparaît quand on entre dans la visite immersive. Les navigateurs interdisent le son sans clic du visiteur.
-- **Volume** : la musique reste discrète sur le reste du site et monte quand on entre dans la Maison (film, galerie 3D, salon).
+- **Son activé par défaut** : à la fin du chargement, le visiteur clique sur **« Entrer dans la Maison »** et la musique démarre très doucement. Ce premier clic est indispensable, car les navigateurs bloquent toute musique sans geste du visiteur. Un lien **« Entrer sans le son »** est aussi proposé.
+- **Volume** : très bas à l'accueil (10 %). Il monte lentement quand on entre dans la visite immersive (85 %) : film, galerie 3D, salon.
+- **Message dans la visite** : à l'entrée de la Maison, un message rappelle que la musique peut être coupée (*Continuer en musique* ou *Couper le son*). Si le visiteur est entré sans le son, le message propose de l'activer.
+- **Bouton Son** : il se trouve dans l'en-tête, à tout moment.
 - **Les films** : la même bande-son est intégrée aux films. Quand on ouvre le film en plein écran, la musique d'ambiance s'efface.
 
 ## À propos des vidéos
