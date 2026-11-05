@@ -71,8 +71,10 @@ em{font-style:italic;font-family:var(--serif)}
 @media (max-width:640px){.loader__meta span:first-child,.loader__meta span:last-child{display:none}.loader__meta{justify-content:center}}
 
 /* ---------- header ---------- */
-.header{position:fixed;top:0;left:0;right:0;z-index:120;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px var(--gut);mix-blend-mode:difference;color:#fff;transition:transform .7s var(--ease)}
-.header.is-hidden{transform:translateY(-110%)}
+.header{position:fixed;top:0;left:0;right:0;z-index:120;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px var(--gut);mix-blend-mode:difference;color:#fff;transition:transform 1s var(--ease),opacity 1s var(--ease)}
+.js .header{opacity:0;transform:translateY(-100%)}
+.js .header.is-in{opacity:1;transform:none}
+.js .header.is-in.is-hidden{transform:translateY(-110%)}
 .header__menu{display:flex;align-items:center;gap:14px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;justify-self:start}
 .burger{width:28px;height:10px;position:relative;display:block}
 .burger i{position:absolute;left:0;right:0;height:1px;background:currentColor;transition:transform .6s var(--ease),top .6s var(--ease),width .4s}

@@ -124,7 +124,7 @@
       .fromTo('.hero__video', { scale: 1.4 }, { scale: 1.15, duration: 2.2, ease: 'expo.out' }, .7)
       .to(heroChars, { yPercent: 0, duration: 1.4, stagger: .035, ease: 'expo.out' }, 1.0)
       .from('.hero__side span, .hero__foot > *', { opacity: 0, y: 20, duration: 1, stagger: .06, ease: 'power3.out' }, 1.4)
-      .from('.header', { yPercent: -100, opacity: 0, duration: 1.2, ease: 'expo.out' }, 1.3);
+      .call(function () { header.classList.add('is-in'); }, null, 1.3);
     setupScroll();
   }
 
@@ -702,6 +702,7 @@
      DÉMARRAGE
      ========================================================= */
   if (reduce || !hasGsap) {
+    header.classList.add('is-in');
     var ld = $('#loader'); if (ld) ld.style.display = 'none';
     document.body.classList.remove('is-loading');
     $$('.reveal').forEach(function (e) { e.style.opacity = 1; e.style.transform = 'none'; });
