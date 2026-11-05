@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="clair">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jacques Logoh Couture — Maison de couture togolaise · Lomé — Paris</title>
 <meta name="description" content="Jacques Logoh Couture, maison de mode contemporaine fondée en 2017 par le créateur togolais Jacques Kodjo Egnonam Logoh. Là où l'identité rencontre l'élégance contemporaine.">
-<meta name="theme-color" content="#0c0b0a">
+<meta name="theme-color" content="#fbf9f6">
 <meta name="robots" content="noindex, nofollow"><!-- démo de présentation : ne pas indexer -->
 <meta property="og:title" content="Jacques Logoh Couture">
 <meta property="og:description" content="Élégance · Raffinement · Excellence. Maison togolaise de haute couture — Lomé · Paris.">
-<meta property="og:image" content="assets/video/film-maison.jpg">
+<meta property="og:image" content="assets/video/film-maison-clair.jpg">
 <link rel="icon" type="image/png" href="assets/img/logo-mark.png">
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/style.css">
@@ -67,7 +67,7 @@
     <ol class="menu__list">
       <li><a href="#maison" data-img="assets/img/site/jacques-logoh.webp"><small>01</small>La Maison</a></li>
       <li><a href="#lignes-sacrees" data-img="assets/img/p/lignes-sacrees-1.webp"><small>02</small>Lignes Sacrées</a></li>
-      <li><a href="#visite" data-img="assets/video/film-maison.jpg"><small>03</small>Visite immersive</a></li>
+      <li><a href="#visite" data-img="assets/video/film-maison-clair.jpg"><small>03</small>Visite immersive</a></li>
       <li><a href="#collections" data-img="assets/img/p/adelita-1.webp"><small>04</small>Collections</a></li>
       <li><a href="#actualites" data-img="assets/img/site/news-brazzaville.webp"><small>05</small>Actualités</a></li>
       <li><a href="#univers" data-img="assets/img/p/robe-solaia-1.webp"><small>06</small>L'univers FIMO228</a></li>
@@ -88,7 +88,7 @@
   <div class="hero__title hero__title--top" aria-hidden="true"><span class="split">Jacques</span></div>
   <div class="hero__stage">
     <div class="hero__arch" data-cursor="Découvrir">
-      <video class="hero__video" src="assets/video/hero-maison.mp4" poster="assets/video/hero-maison.jpg" autoplay muted loop playsinline preload="auto"></video>
+      <video class="hero__video" data-media="hero-maison" src="assets/video/hero-maison-clair.mp4" poster="assets/video/hero-maison-clair.jpg" autoplay muted loop playsinline preload="auto"></video>
     </div>
   </div>
   <div class="hero__title hero__title--bottom" aria-hidden="true"><span class="split">Logoh</span></div>
@@ -235,7 +235,7 @@
   <div class="film" id="film">
     <div class="film__sticky">
       <div class="film__frame" id="filmFrame" data-cursor="Lecture">
-        <video id="filmVideo" src="assets/video/film-maison.mp4" poster="assets/video/film-maison.jpg" muted loop playsinline preload="metadata"></video>
+        <video id="filmVideo" data-media="film-maison" src="assets/video/film-maison-clair.mp4" poster="assets/video/film-maison-clair.jpg" muted loop playsinline preload="metadata"></video>
         <div class="film__overlay">
           <p class="film__label">Le Film de la Maison <span>· 0'51</span></p>
           <button class="film__play" id="filmPlay" aria-label="Regarder le film en plein écran"><span></span></button>
@@ -268,7 +268,7 @@
       <a class="btn" href="https://wa.me/33782533170?text=Bonjour%2C%20je%20souhaite%20prendre%20rendez-vous%20avec%20la%20Maison%20Jacques%20Logoh%20Couture." target="_blank" rel="noopener">Prendre rendez-vous</a>
     </div>
     <div class="salon__phone">
-      <video src="assets/video/visite-maison.mp4" poster="assets/video/visite-maison.jpg" muted loop playsinline preload="none" data-autoplay></video>
+      <video data-media="visite-maison" src="assets/video/visite-maison-clair.mp4" poster="assets/video/visite-maison-clair.jpg" muted loop playsinline preload="none" data-autoplay></video>
     </div>
   </div>
 </section>
@@ -410,7 +410,7 @@
 <div class="modal modal--film" id="filmModal" role="dialog" aria-modal="true" aria-label="Le Film de la Maison" aria-hidden="true">
   <div class="modal__bg" data-close></div>
   <button class="modal__close" data-close aria-label="Fermer">Fermer ✕</button>
-  <video id="filmFull" src="assets/video/film-maison.mp4" poster="assets/video/film-maison.jpg" controls playsinline preload="none"></video>
+  <video id="filmFull" data-media="film-maison" src="assets/video/film-maison-clair.mp4" poster="assets/video/film-maison-clair.jpg" controls playsinline preload="none"></video>
 </div>
 
 <!-- ============ PANIER ============ -->
@@ -435,8 +435,8 @@
   <button class="sound-invite__no" id="soundNo">Plus tard</button>
 </div>
 
-<!-- ============ SÉLECTEUR DE MODÈLE ============ -->
-<nav class="model-switch" aria-label="Choisir le modèle du site"><span>Modèle</span><a href="index.html" data-model="nuit" class="is-on" aria-current="page">Nuit</a><a href="clair.html" data-model="clair">Lumière</a></nav>
+<!-- ============ SÉLECTEUR DE MODE (clair par défaut / sombre) ============ -->
+<div class="model-switch" role="group" aria-label="Choisir le mode d’affichage"><span>Mode</span><button type="button" data-theme-set="clair" class="is-on" aria-pressed="true">Clair</button><button type="button" data-theme-set="nuit" aria-pressed="false">Sombre</button></div>
 
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>

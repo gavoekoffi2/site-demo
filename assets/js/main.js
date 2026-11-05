@@ -10,7 +10,8 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isTouch = window.matchMedia('(hover: none)').matches;
   var WA = '33782533170';
-  var VSUF = document.documentElement.getAttribute('data-theme') === 'clair' ? '-clair' : '';
+  function isClair() { return document.documentElement.getAttribute('data-theme') !== 'nuit'; }
+  function mediaSrc(base, ext) { return 'assets/video/' + base + (isClair() ? '-clair' : '') + '.' + ext; }
   var PRODUCTS = window.JLC_PRODUCTS || [];
   var byId = {}; PRODUCTS.forEach(function (p) { byId[p.id] = p; });
 
@@ -321,7 +322,7 @@
       { num: 'Salle I', name: 'L’Héritage', items: [
         { src: 'assets/img/site/tissus-lignes-sacrees.webp', t: 'Fait main au Togo', s: 'Tissus' },
         { src: 'assets/img/site/detail-batik.webp', t: 'Le batik signature', s: 'Détail' },
-        { video: 'assets/video/visite-maison' + VSUF + '.mp4', poster: 'assets/video/visite-maison' + VSUF + '.jpg', t: 'La Visite', s: 'Film' },
+        { video: 'visite-maison', t: 'La Visite', s: 'Film' },
         { src: 'assets/img/site/bijou-logo.webp', t: 'Le monogramme', s: 'Pièce signature' } ] },
       { num: 'Salle II', name: 'Lignes Sacrées', items: [
         { id: 'lignes-sacrees', i: 0 }, { id: 'robe-bintou', i: 0 }, { id: 'roger', i: 0 }, { id: 'robe-solaia-2', i: 3 }, { id: 'lignes-sacrees', i: 2 } ] },
@@ -345,7 +346,7 @@
         var p = it.id ? byId[it.id] : null;
         var src = p ? (p.imgs[it.i] || p.imgs[0]).src : it.src;
         var el = document.createElement('div'); el.className = 'g3d__item';
-        var media = it.video ? '<video data-src="' + it.video + '" poster="' + it.poster + '" muted loop playsinline preload="none"></video>' : '<img data-src="' + src + '" alt="' + (p ? p.name : it.t) + '">';
+        var media = it.video ? '<video data-media="' + it.video + '" data-src="' + mediaSrc(it.video, 'mp4') + '" poster="' + mediaSrc(it.video, 'jpg') + '" muted loop playsinline preload="none"></video>' : '<img data-src="' + src + '" alt="' + (p ? p.name : it.t) + '">';
         el.innerHTML = '<figure class="g3d__card">' + media + '<figcaption><b>' + (p ? p.name : it.t) + '</b><span>' + (p ? money(p) : it.s) + '</span></figcaption></figure>';
         if (p) { el.dataset.open = p.id; el.dataset.cursor = 'Découvrir'; }
         else if (it.video) { el.dataset.cursor = 'Lecture'; el.addEventListener('click', openFilm); }
@@ -643,6 +644,45 @@
       else if (l) { c.classList.remove('is-hover'); c.classList.add('is-link'); }
       else { c.classList.remove('is-hover', 'is-link'); }
     });
+  })();
+
+  /* =========================================================
+     MODE CLAIR (par défaut) / MODE SOMBRE — sur la même page
+     ========================================================= */
+  (function () {
+    var root = document.documentElement, meta = $('meta[name="theme-color"]');
+    function swapVideo(v, src) {
+      var playing = !v.paused, t = v.currentTime || 0;
+      var onMeta = function () {
+        v.removeEventListener('loadedmetadata', onMeta);
+        try { v.currentTime = Math.min(t, (v.duration || t + 1) - .1); } catch (e) {}
+        if (playing) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      };
+      v.addEventListener('loadedmetadata', onMeta);
+      v.setAttribute('src', src); if (v.dataset.src) v.dataset.src = src;
+      v.load();
+    }
+    function applyMedia() {
+      $$('video[data-media]').forEach(function (v) {
+        var src = mediaSrc(v.dataset.media, 'mp4');
+        v.poster = mediaSrc(v.dataset.media, 'jpg');
+        if (!v.getAttribute('src')) { if (v.dataset.src) v.dataset.src = src; return; }
+        if (v.getAttribute('src') !== src) swapVideo(v, src);
+      });
+      var mv = $('.menu__list a[href="#visite"]');
+      if (mv) mv.dataset.img = mediaSrc('film-maison', 'jpg');
+    }
+    function setTheme(t, animate) {
+      var go = function () {
+        root.setAttribute('data-theme', t === 'nuit' ? 'nuit' : 'clair');
+        if (meta) meta.setAttribute('content', t === 'nuit' ? '#0c0b0a' : '#fbf9f6');
+        $$('[data-theme-set]').forEach(function (b) { var on = b.dataset.themeSet === t; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
+        applyMedia();
+      };
+      if (animate && document.startViewTransition && !reduce) document.startViewTransition(go); else go();
+    }
+    $$('[data-theme-set]').forEach(function (b) { b.addEventListener('click', function () { setTheme(b.dataset.themeSet, true); }); });
+    setTheme(isClair() ? 'clair' : 'nuit', false);
   })();
 
   /* =========================================================

@@ -4,18 +4,19 @@ Proposition de refonte du site [jacqueslogohcouture.com](https://jacqueslogohcou
 
 Tout le contenu vient du site actuel : textes, biographie, catalogue de 32 pièces (noms, prix, descriptions, tailles, coloris), actualités, coordonnées et photos.
 
-## Deux modèles à présenter
+## Une seule adresse, deux ambiances
 
-| Modèle | Fichier | Ambiance |
-|---|---|---|
-| **A — Nuit** | `index.html` | Fonds noir profond, ivoire et or : un écrin dramatique, comme un défilé de nuit. |
-| **B — Lumière** | `clair.html` | Fonds blancs et ivoire : les photos, les modèles et les tissus ressortent au maximum. |
+Le site s'ouvre toujours en **mode clair** : fonds blancs et ivoire, pour que les modèles et les tissus ressortent au maximum.
 
-Un sélecteur **Nuit / Lumière**, en bas de l'écran, permet de passer d'un modèle à l'autre pendant la présentation.
+Le bouton **Clair / Sombre**, en bas de l'écran, fait passer toute la page en **mode sombre** (noir profond, ivoire et or) sans la recharger. Les vidéos changent aussi de version.
+
+L'ancienne adresse `clair.html` renvoie automatiquement vers la page principale.
 
 ## Ouvrir le site
 
-Ouvrez `index.html` ou `clair.html` dans Chrome, Safari ou Edge. Tout fonctionne hors-ligne, sans serveur : polices, bibliothèques et vidéos sont incluses.
+Ouvrez `index.html` dans Chrome, Safari ou Edge. Tout fonctionne hors-ligne, sans serveur : polices, bibliothèques et vidéos sont incluses.
+
+En ligne : https://gavoekoffi2.github.io/site-demo/
 
 ## L'expérience
 
@@ -55,14 +56,14 @@ Les vidéos dans `assets/video/` sont des montages cinématographiques réalisé
 - `hero-maison.mp4` : boucle verticale 4:5 ;
 - `film-maison.mp4` : film 16:9 ;
 - `visite-maison.mp4` : reel vertical 9:16 ;
-- les versions `-clair` pour le modèle Lumière.
+- les versions `-clair` pour le mode clair.
 
 ## Structure
 
 ```
-index.html            Modèle A — Nuit
-clair.html            Modèle B — Lumière (généré : python3 tools/build_clair.py)
-assets/css/           styles (le thème clair est dans style.css, section « MODÈLE B »)
+index.html            le site (mode clair par défaut, bouton Clair / Sombre)
+clair.html            ancienne adresse, redirige vers index.html
+assets/css/           styles (le mode clair est dans style.css, section « MODÈLE B »)
 assets/js/data.js     catalogue repris du site actuel
 assets/js/main.js     interactions : défilement fluide, galerie 3D, panier, devises
 assets/img/           photos optimisées (WebP) et logo vectorisé
@@ -70,4 +71,3 @@ assets/video/         films de la visite immersive
 assets/vendor/        GSAP, ScrollTrigger, Lenis (copies locales)
 ```
 
-Après toute modification d'`index.html`, relancez `python3 tools/build_clair.py` pour mettre à jour `clair.html`.

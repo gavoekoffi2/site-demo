@@ -490,9 +490,10 @@ html[data-theme="clair"]{--film-bg:#f8f5f0}
 .model-switch{position:fixed;left:50%;bottom:22px;margin-left:-0px;translate:-50% 0;z-index:130;display:flex;align-items:center;gap:4px;padding:4px;border-radius:40px;background:rgba(20,18,16,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(242,236,226,.18);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#f2ece2;opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 body:not(.is-loading) .model-switch{opacity:1;transform:none;transition-delay:2.4s}
 .model-switch span{padding:0 10px 0 12px;color:rgba(242,236,226,.6)}
-.model-switch a{padding:8px 14px;border-radius:30px;transition:background .3s,color .3s;white-space:nowrap}
-.model-switch a.is-on{background:#f2ece2;color:#0c0b0a}
-.model-switch a:not(.is-on):hover{color:var(--or-2)}
+.model-switch button{padding:8px 14px;border-radius:30px;transition:background .3s,color .3s;white-space:nowrap;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.model-switch button.is-on{background:#f2ece2;color:#0c0b0a}
+.model-switch button:not(.is-on):hover{color:var(--or-2)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.7s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
 @media (max-width:640px){.model-switch span{display:none}}
 body.in-g3d .model-switch,body.menu-open .model-switch{opacity:0!important;pointer-events:none}
 
@@ -540,7 +541,7 @@ html[data-theme="clair"] .toast{background:#15130f;color:#fbf9f6}
 html[data-theme="clair"] .universe__float{box-shadow:0 30px 60px rgba(90,64,30,.2)}
 html[data-theme="clair"] .model-switch{background:rgba(255,255,255,.8);border-color:rgba(21,19,15,.12);color:#15130f}
 html[data-theme="clair"] .model-switch span{color:rgba(21,19,15,.55)}
-html[data-theme="clair"] .model-switch a.is-on{background:#15130f;color:#fbf9f6}
+html[data-theme="clair"] .model-switch button.is-on{background:#15130f;color:#fbf9f6}
 
 /* =========================================================
    EXPÉRIENCE SONORE
